@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+	android:scrollbars="vertical" android:layout_height="fill_parent"
+	android:layout_width="fill_parent" >
+	<TableLayout android:layout_height="fill_parent"
+		android:layout_width="fill_parent" android:id="@+id/tableLayout1">
+		<TableRow android:layout_width="fill_parent"
+			android:layout_height="wrap_content">
+			<TextView android:text="Current Location"
+				android:layout_margin="2dp" android:layout_weight="1"
+				android:layout_span="4" android:layout_height="wrap_content"
+				android:background="#5CB7F0" android:textColor="#FFFFFF"/>
+			<Button android:id="@+id/store" android:layout_width="wrap_content"
+				android:text="Store" android:layout_height="35dp" android:onClick="onStoreLocation"></Button>
+		</TableRow>
+		<TableRow android:layout_width="wrap_content"
+			android:layout_height="wrap_content">
+			<TextView android:text="Provider" android:layout_margin="2dp"
+				android:layout_weight="1" android:layout_width="80dp"
+				android:layout_height="wrap_content" />
+			<TextView android:text="Lat" android:layout_margin="2dp"
+				android:layout_weight="1" android:layout_width="75dp"
+				android:layout_height="wrap_content" />
+			<TextView android:text="Long" android:layout_margin="2dp"
+				android:layout_weight="1" android:layout_width="75dp"
+				android:layout_height="wrap_content" />
+			<TextView android:text="Time" android:layout_margin="2dp"
+				android:layout_weight="1" android:layout_width="70dp"
+				android:layout_height="wrap_content" />
+			<TextView android:text="Acc" android:layout_margin="2dp"
+				android:layout_weight="1" android:layout_width="30dp"
+				android:layout_height="wrap_content" />
+		</TableRow>
+		<TableRow android:layout_width="wrap_content"
+			android:layout_height="wrap_content">
+			<TextView android:id="@+id/currentlocationname"
+				android:layout_margin="2dp" android:layout_weight="1"
+				android:layout_width="80dp" android:layout_height="wrap_content" />
+			<TextView android:id="@+id/currentlocationlatitude"
+				android:layout_margin="2dp" android:layout_weight="1"
+				android:layout_width="75dp" android:layout_height="wrap_content" />
+			<TextView android:id="@+id/currentlocationlongitude"
+				android:layout_margin="2dp" android:layout_weight="1"
+				android:layout_width="75dp" android:layout_height="wrap_content" />
+			<TextView android:id="@+id/currentlocationtime"
+				android:layout_margin="2dp" android:layout_weight="1"
+				android:layout_width="70dp" android:layout_height="wrap_content" />
+			<TextView android:id="@+id/currentlocationaccuracy"
+				android:layout_margin="2dp" android:layout_weight="1"
+				android:layout_width="30dp" android:layout_height="wrap_content" />
+		</TableRow>
+		<TableRow android:layout_width="wrap_content"
+			android:layout_height="35dp">
+			<TextView android:text="Stored Location"
+				android:layout_margin="2dp" android:layout_weight="1"
+				android:layout_span="5" android:background="#5CB7F0" android:textColor="#FFFFFF"/>
+		</TableRow>
+		<TableRow android:layout_width="wrap_content"
+			android:layout_height="wrap_content">
+			<TextView android:text="Provider" android:layout_margin="2dp"
+				android:layout_weight="1" android:layout_width="80dp"
+				android:layout_height="wrap_content" />
+			<TextView android:text="Lat" android:layout_margin="2dp"
+				android:layout_weight="1" android:layout_width="75dp"
+				android:layout_height="wrap_content" />
+			<TextView android:text="Long" android:layout_margin="2dp"
+				android:layout_weight="1" android:layout_width="75dp"
+				android:layout_height="wrap_content" />
+			<TextView android:text="Time" android:layout_margin="2dp"
+				android:layout_weight="1" android:layout_width="70dp"
+				android:layout_height="wrap_content" />
+			<TextView android:text="Acc" android:layout_margin="2dp"
+				android:layout_weight="1" android:layout_width="30dp"
+				android:layout_height="wrap_content" />
+		</TableRow>
+		<TableRow android:layout_width="wrap_content"
+			android:layout_height="wrap_content">
+			<TextView android:id="@+id/storedlocationname"
+				android:layout_margin="2dp" android:layout_weight="1"
+				android:layout_width="80dp" android:layout_height="wrap_content" />
+			<TextView android:id="@+id/storedlocationlatitude"
+				android:layout_margin="2dp" android:layout_weight="1"
+				android:layout_width="75dp" android:layout_height="wrap_content" />
+			<TextView android:id="@+id/storedlocationlongitude"
+				android:layout_margin="2dp" android:layout_weight="1"
+				android:layout_width="75dp" android:layout_height="wrap_content" />
+			<TextView android:id="@+id/storedlocationtime"
+				android:layout_margin="2dp" android:layout_weight="1"
+				android:layout_width="75dp" android:layout_height="wrap_content" />
+			<TextView android:id="@+id/storedlocationaccuracy"
+				android:layout_margin="2dp" android:layout_weight="1"
+				android:layout_width="30dp" android:layout_height="wrap_content" />
+		</TableRow>
+		<TableRow android:layout_width="wrap_content"
+			android:layout_height="35dp">
+			<TextView android:text="Provider Updates" android:layout_margin="2dp"
+				android:layout_weight="2" android:layout_span="5"
+				android:background="#5CB7F0" android:textColor="#FFFFFF" />
+		</TableRow>
+		<TableRow android:layout_width="wrap_content"
+			android:layout_height="35dp">
+			<TextView android:text="Update interval (minutes):"
+				android:layout_margin="2dp" android:layout_weight="2" android:layout_span="3"/>
+			<EditText android:inputType="number" android:layout_width="wrap_content" android:layout_span="2"
+				android:layout_height="wrap_content" android:id="@+id/sampleinterval">
+			</EditText>
+		</TableRow>
+		<TableRow android:layout_width="wrap_content"
+			android:layout_height="35dp">
+			<TextView android:text="Update distance (metres):"
+				android:layout_margin="2dp" android:layout_weight="2" android:layout_span="3"/>
+			<EditText android:inputType="number" android:layout_width="wrap_content" android:layout_span="2"
+				android:layout_height="wrap_content" android:id="@+id/sampledistance">
+			</EditText>
+		</TableRow>
+		<TableRow android:layout_width="wrap_content"
+			android:layout_height="35dp">
+			<TextView android:text="Proximity Alert" android:layout_margin="2dp"
+				android:layout_weight="2" android:layout_span="5"
+				android:background="#5CB7F0" android:textColor="#FFFFFF"/>
+		</TableRow>
+		<TableRow android:layout_width="wrap_content"
+			android:layout_height="35dp">
+			<TextView android:text="Proximity Radius (metres):"
+				android:layout_margin="2dp" android:layout_weight="2" android:layout_span="3"/>
+			<EditText android:inputType="number" android:layout_width="wrap_content" android:layout_span="2"
+				android:layout_height="wrap_content" android:id="@+id/vicinityradius">
+			</EditText>
+		</TableRow>
+		<TableRow android:layout_width="wrap_content"
+			android:layout_height="35dp">
+			<TextView android:text="Database"
+				android:layout_margin="2dp" android:layout_weight="2"
+				android:layout_span="5" android:background="#5CB7F0" android:textColor="#FFFFFF" />
+		</TableRow>
+		<TableRow android:layout_width="fill_parent"
+			android:layout_height="35dp">
+			<TextView android:id="@+id/service" 
+				android:layout_margin="2dp" android:layout_weight="2"
+				android:layout_span="2" android:layout_width="fill_parent" />
+			<Button android:id="@+id/button1" android:layout_margin="2dp"
+				android:layout_weight="2" android:text="Email" android:layout_width="fill_parent"
+				android:layout_height="35dp" android:onClick="onEmailData"></Button>
+			<Button android:id="@+id/button1" android:layout_margin="2dp"
+				android:layout_weight="2" android:layout_width="wrap_content"
+				android:text="Clear" android:layout_height="35dp" android:onClick="onClearDataBase"></Button>
+		</TableRow>
+	</TableLayout>
+</ScrollView>

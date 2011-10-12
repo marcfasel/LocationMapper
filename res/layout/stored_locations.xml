@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/linearLayout" android:layout_width="fill_parent"
+	android:layout_height="fill_parent" android:orientation="vertical">
+	<TableLayout android:id="@+id/headerLayout"
+		android:layout_width="wrap_content" android:layout_height="wrap_content">
+		<TableRow android:id="@+id/headerRow" android:layout_height="match_parent"
+			android:background="#2374b6" android:layout_margin="2dp">
+			<TextView android:layout_margin="2dp"
+				android:layout_weight="1" android:background="#5CB7F0" android:textColor="#FFFFFF"
+				android:layout_width="80dp" android:text="Name" android:gravity="center_horizontal"></TextView>
+			<TextView android:layout_margin="2dp"
+				android:layout_weight="1" android:background="#5CB7F0" android:textColor="#FFFFFF"
+				android:layout_width="75dp" android:text="Lat" android:gravity="center_horizontal"></TextView>
+			<TextView android:layout_margin="2dp"
+				android:layout_weight="1" android:background="#5CB7F0" android:textColor="#FFFFFF"
+				android:layout_width="75dp" android:text="Lng" android:gravity="center_horizontal"></TextView>
+			<TextView android:layout_margin="2dp"
+				android:layout_weight="1" android:background="#5CB7F0" android:textColor="#FFFFFF"
+				android:layout_width="70dp" android:text="Time" android:gravity="center_horizontal"></TextView>
+			<TextView android:layout_margin="2dp"
+				android:layout_weight="1" android:background="#5CB7F0" android:textColor="#FFFFFF"
+				android:layout_width="30dp" android:text="Acc" android:gravity="center_horizontal"></TextView>
+		</TableRow>
+	</TableLayout>
+	<ListView android:id="@android:id/android:list"
+		android:layout_height="wrap_content" android:layout_width="fill_parent">
+	</ListView>
+</LinearLayout>
