@@ -1,0 +1,268 @@
+<html>
+<head>
+<style type="text/css">
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#map_canvas {
+  height: 85%;
+  
+}
+</style>
+<script type="text/javascript"
+	src="http://maps.googleapis.com/maps/api/js?sensor=true"></script>
+
+<script type="text/javascript">
+	var map, 
+		arrays, 
+		nextLine, 
+		OFFICE_LAT = -37.8158, 
+		OFFICE_LNG = 144.9645, 
+		ACCURACY = 50, 
+		GPS_COLOR = '#FF0000', 
+		NETWORK_COLOR = '#009999', 
+		PROXIMITY_ENTER_COLOR = '#00FF00', 
+		PROXIMITY_EXIT_COLOR = '#000000', 
+		STORED_COLOR = '#8800FF';
+
+	function initialize() {
+		var myOptions = {
+			zoom : 3,
+			mapTypeId : google.maps.MapTypeId.ROADMAP
+		};
+
+		map = new google.maps.Map(document.getElementById('map_canvas'), myOptions);
+
+		map.setCenter(new google.maps.LatLng(OFFICE_LAT, OFFICE_LNG));
+	}
+
+	function visualiseData() {
+		initialize();
+		//var dataType = getRadioValue();
+		var data = document.getElementById('data').value;
+		var dataArrays = splitData(data);
+		var bounds = new google.maps.LatLngBounds();
+		
+		if (data.length != 0) {
+			arrays = splitData(data);
+			if (document.dataForm.dataTypeGPS.checked === true) {
+				drawData(arrays.gps, GPS_COLOR,bounds);
+			}
+			if (document.dataForm.dataTypeNetwork.checked === true) {
+				drawData(arrays.network, NETWORK_COLOR, bounds);
+			}
+			if (document.dataForm.dataTypeProximity.checked === true) {
+				drawData(arrays.stored, STORED_COLOR, bounds);
+				drawProximityData(arrays.proximity, bounds);
+			}
+			map.fitBounds(bounds);
+		} else {
+			alert("No data available.");
+		}
+	}
+
+	function getRadioValue()
+	{
+	for (var i=0; i < document.dataForm.dataType.length; i++){
+	   if (document.dataForm.dataType[i].checked)
+	      {
+	      return document.dataForm.dataType[i].value;
+	      }
+	   }
+	}
+	
+	function drawProximityData(data, bounds) {
+		for ( var i = 0; i < data.length; i++) {
+			var dataValues = data[i].split(',');
+			drawMarker(dataValues);
+			bounds.extend(new google.maps.LatLng(dataValues[0], dataValues[1]));
+			if (i>0){
+				previousValues = data[i-1].split(',');
+				var connectingCoordinates = [new google.maps.LatLng(dataValues[0], dataValues[1]),new google.maps.LatLng(previousValues[0], previousValues[1])];
+				drawConnectingLine(connectingCoordinates,'#000000');
+			}
+		}
+	}
+
+	function drawData(data, color, bounds) {
+		for ( var i = 0; i < data.length; i++) {
+			var dataValues = data[i].split(',');
+			drawCircle(dataValues[0], dataValues[1], dataValues[2], color, 0.01, dataValues[4]);
+			bounds.extend(new google.maps.LatLng(dataValues[0], dataValues[1]));
+			if (i>0){
+				previousValues = data[i-1].split(',');
+				var connectingCoordinates = [new google.maps.LatLng(dataValues[0], dataValues[1]),new google.maps.LatLng(previousValues[0], previousValues[1])];
+				drawConnectingLine(connectingCoordinates,color);
+			}
+		}
+	}
+
+	function splitData(data) {
+		var lineArray = data.split('\n');
+		var arrays = {
+			stored : new Array(),
+			network : new Array(),
+			gps : new Array(),
+			proximity : new Array()
+		};
+
+		for ( var i = 0; i < lineArray.length; i++) {
+			var line = lineArray[i];
+			var provider = line.split(',')[3];
+			var accuracy = line.split(',')[2];
+			switch (provider) {
+			case 'network':
+				arrays.network.push(line);
+				break;
+			case 'gps':
+				arrays.gps.push(line);
+				break;
+			case 'prx_enter':
+				arrays.proximity.push(line);
+				break;
+			case 'prx_exit':
+				arrays.proximity.push(line);
+				break;
+			case 'stored':
+				arrays.stored.push(line);
+				break;
+			}
+		}
+
+		return arrays;
+	}
+
+	function drawConnectingLine(connectingCoordinates, color) {
+		var line = new google.maps.Polyline({
+			path : connectingCoordinates,
+			strokeColor : color,
+			strokeOpacity : 0.6,
+			strokeWeight : 1,
+			map: map
+		});
+	}
+
+	function drawMarker(dataValues) {
+		var image;
+		switch(dataValues[3]){
+		case 'prx_enter':
+			image = new google.maps.MarkerImage('images/proximity_enter.png', new google.maps.Size(14, 14),
+					new google.maps.Point(0, 0), new google.maps.Point(7, 7));
+			break;
+		case 'prx_exit':
+			image = new google.maps.MarkerImage('images/proximity_exit.png', new google.maps.Size(14, 14),
+					new google.maps.Point(0, 0), new google.maps.Point(7, 7));
+			break;
+		}
+		var shadow = new google.maps.MarkerImage('images/shadow.png', new google.maps.Size(24, 14),
+				new google.maps.Point(0, 0), new google.maps.Point(7, 7));
+
+		var shape = {
+			coord : [ 10, 3, 11, 4, 11, 5, 11, 6, 11, 7, 11, 8, 11, 9, 11, 10, 10, 11, 4, 11, 3, 10, 3, 9, 3, 8, 3, 7,
+					3, 6, 3, 5, 3, 4, 4, 3, 10, 3 ],
+			type : 'poly'
+		};
+
+		var marker = new google.maps.Marker({
+			draggable : false,
+			raiseOnDrag : false,
+			icon : image,
+			shadow : shadow,
+			shape : shape,
+			map : map,
+			title: dataValues[4],
+			position : new google.maps.LatLng(dataValues[0], dataValues[1])
+		});
+	}
+
+	function drawCircle(latitude, longitude, accuracy, color, fillOpacity, text) {
+
+		var image = new google.maps.MarkerImage('Images/image.png', new google.maps.Size(14, 14),
+				new google.maps.Point(0, 0), new google.maps.Point(7, 7));
+
+		var shadow = new google.maps.MarkerImage('Images/shadow.png', new google.maps.Size(24, 14),
+				new google.maps.Point(0, 0), new google.maps.Point(7, 7));
+
+		var shape = {
+			coord : [ 10, 3, 11, 4, 11, 5, 11, 6, 11, 7, 11, 8, 11, 9, 11, 10, 10, 11, 4, 11, 3, 10, 3, 9, 3, 8, 3, 7,
+					3, 6, 3, 5, 3, 4, 4, 3, 10, 3 ],
+			type : 'poly'
+		};
+
+		var marker = new google.maps.Marker({
+			draggable : false,
+			raiseOnDrag : false,
+			icon : image,
+			shadow : shadow,
+			shape : shape,
+			map : map,
+			title: text,
+			position : new google.maps.LatLng(latitude, longitude)
+		});
+
+		var circle = new google.maps.Circle({
+			map : map,
+			radius : parseInt(accuracy),
+			fillColor : color,
+			fillOpacity : fillOpacity,
+			strokeWeight : 1,
+			strokeOpacity : 0.8,
+			strokeColor : color
+		});
+		circle.bindTo('center', marker, 'position');
+	}
+
+	google.maps.event.addDomListener(window, 'load', initialize);
+</script>
+</head>
+<body>
+	<div id="map_canvas"></div>
+	<p>Paste location data into this text box below, select the type of location data you want to see, and press the "Render" button. It's that easy!</p>
+	<form name="dataForm" action="" method="POST">
+		<div style="float: left;">
+			<textarea id="data" style="width: 500px; height: 75px;" >
+-37.81599490000001,144.96441501428572,96,stored,18:29:46
+-37.815929014285715,144.9642501857143,91,prx_enter,18:30:46
+-37.8163697,144.9636684,60,prx_exit,19:10:51
+-37.81354171428571,144.96557667142855,60,network,19:17:06
+-37.81354171428571,144.96557667142855,60,network,19:17:06
+-37.8134822845459,144.96479272842407,8,gps,19:17:09
+-37.81366467475891,144.9651199579239,12,gps,19:17:14
+-37.81367540359497,144.965318441391,12,gps,19:17:17
+-37.81335890293121,144.9655383825302,12,gps,19:18:01
+-37.81326770782471,144.96558666229248,8,gps,19:18:04
+-37.81265988333333,144.96521451666666,60,network,19:18:44
+-37.81265988333333,144.96521451666666,60,network,19:18:44
+-37.813085317611694,144.96561348438263,16,gps,19:18:47
+-37.81265988333333,144.96521451666666,60,network,19:18:55
+-37.813085317611694,144.96561348438263,16,gps,19:18:57
+-37.8129243850708,144.9653559923172,8,gps,19:19:32
+-37.81232015,144.9650399875,75,network,19:19:38
+-37.812854647636414,144.96531307697296,12,gps,19:19:41
+-37.81245231628418,144.96527552604675,16,gps,19:20:03
+-37.81236112117767,144.96529698371887,24,gps,19:20:05
+-37.812066078186035,144.96495366096497,32,gps,19:20:26
+-37.81195342540741,144.96497511863708,32,gps,19:20:34
+-37.81169593334198,144.96462643146515,12,gps,19:20:58
+-37.81162083148956,144.96458888053894,8,gps,19:21:06
+-37.811381688888886,144.9646280222222,54,network,19:21:08
+-37.811099809999995,144.96475721,65,network,19:21:53
+</textarea>
+		</div>
+		<div style="float: left;">
+			<input type="checkbox" name="dataTypeGPS" checked="checked">Show
+			GPS<br /> 
+			<input type="checkbox" name="dataTypeNetwork" >Show
+			network<br /> 
+			<input type="checkbox" name="dataTypeProximity">Show
+			proximity alerts<br /> 
+				<input
+				type="submit" value="Render" onClick="visualiseData(); return false;">
+		</div>
+	</form>
+</body>
+</html>
