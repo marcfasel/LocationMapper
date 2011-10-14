@@ -27,6 +27,6 @@ The settings dialog also has a button to clear the database.
 ##Google Maps Application
 The folder html/ contains the Google Maps app RenderLocation.html.
 
-![alt Google Maps Location Mapper](http://github.com/marcfasel/LocationMapper/raw/master/GoogleMapsLocationMapper.png "Google Maps Location Mapper)
+![alt Google Maps Location Mapper](http://github.com/marcfasel/LocationMapper/raw/master/GoogleMapsLocationMapper.png "Google Maps Location Mapper")
 
 On the page the CSV data emailed previously can be pasted into the texture. Select from network, GPS, or proximity alert data, then press Render to view the data drawn on the map.  
