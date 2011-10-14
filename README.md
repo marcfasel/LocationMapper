@@ -25,6 +25,10 @@ To visualise the data the email export sends the data as a CSV file. This CSV da
 
 The settings dialog also has a button to clear the database.
 ##Google Maps Application
-The folder html/ contains the Google Maps app RenderLocation.html. 
+The folder html/ contains the Google Maps app RenderLocation.html.
+
+<center> <img src="http://github.com/marcfasel/LocationMapper/raw/master/GoogleMapsLocationMapper.png">
+Google Maps Location Mapper</center>
+
 
 On the page the CSV data emailed previously can be pasted into the texture. Select from network, GPS, or proximity alert data, then press Render to view the data drawn on the map.  
