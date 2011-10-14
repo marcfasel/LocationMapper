@@ -11,7 +11,7 @@ public class LocationMapperApplication extends Application {
 
 	@Override
 	public void onCreate() {
-		Log.w(TAG, "onCreate()");
+		Log.i(TAG, "onCreate()");
 		super.onCreate();
 		preferences = new Preferences(getSharedPreferences(PREFS_NAME, 0));
 		preferences.load();

@@ -16,11 +16,11 @@ public final class R {
     }
     public static final class id {
         public static final int button1=0x7f060010;
-        public static final int currentlocationaccuracy=0x7f060006;
-        public static final int currentlocationlatitude=0x7f060003;
-        public static final int currentlocationlongitude=0x7f060004;
-        public static final int currentlocationname=0x7f060002;
-        public static final int currentlocationtime=0x7f060005;
+        public static final int currentlocationaccuracy=0x7f060008;
+        public static final int currentlocationlatitude=0x7f060005;
+        public static final int currentlocationlongitude=0x7f060006;
+        public static final int currentlocationname=0x7f060004;
+        public static final int currentlocationtime=0x7f060007;
         public static final int headerLayout=0x7f060012;
         public static final int headerRow=0x7f060013;
         public static final int linearLayout=0x7f060011;
@@ -29,18 +29,18 @@ public final class R {
         public static final int locationlongitude=0x7f060016;
         public static final int locationname=0x7f060014;
         public static final int locationtime=0x7f060017;
-        public static final int sampledistance=0x7f06000d;
-        public static final int sampleinterval=0x7f06000c;
+        public static final int sampledistance=0x7f060002;
+        public static final int sampleinterval=0x7f060001;
         public static final int service=0x7f06000f;
         public static final int settings=0x7f060019;
-        public static final int store=0x7f060001;
-        public static final int storedlocationaccuracy=0x7f06000b;
-        public static final int storedlocationlatitude=0x7f060008;
-        public static final int storedlocationlongitude=0x7f060009;
-        public static final int storedlocationname=0x7f060007;
-        public static final int storedlocationtime=0x7f06000a;
+        public static final int store=0x7f060009;
+        public static final int storedlocationaccuracy=0x7f06000e;
+        public static final int storedlocationlatitude=0x7f06000b;
+        public static final int storedlocationlongitude=0x7f06000c;
+        public static final int storedlocationname=0x7f06000a;
+        public static final int storedlocationtime=0x7f06000d;
         public static final int tableLayout1=0x7f060000;
-        public static final int vicinityradius=0x7f06000e;
+        public static final int vicinityradius=0x7f060003;
     }
     public static final class layout {
         public static final int location_settings=0x7f030000;

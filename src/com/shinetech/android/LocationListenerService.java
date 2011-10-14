@@ -29,7 +29,7 @@ public class LocationListenerService extends Service implements LocationListener
 	private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			Log.w(TAG, "Received intent " + intent.toString());
+			Log.i(TAG, "Received intent " + intent.toString());
 			if (PREFERNCES_CHANGED_INTENT.equals(intent.getAction())) {
 				requestLocationUpdates();
 				addProximityAlert();
@@ -61,7 +61,7 @@ public class LocationListenerService extends Service implements LocationListener
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		Log.w(TAG, "onStartCommand()");
+		Log.i(TAG, "onStartCommand()");
 		super.onStartCommand(intent, flags, startId);
 		// We want this service to continue running until it is explicitly
 		// stopped, so return sticky.
@@ -70,7 +70,7 @@ public class LocationListenerService extends Service implements LocationListener
 
 	@Override
 	public void onCreate() {
-		Log.w(TAG, "onCreate()");
+		Log.i(TAG, "onCreate()");
 		dbAdapter = new LocationDbAdapter(this);
 		dbAdapter.open();
 
@@ -86,7 +86,7 @@ public class LocationListenerService extends Service implements LocationListener
 
 	@Override
 	public void onDestroy() {
-		Log.w(TAG, "onDestroy()");
+		Log.i(TAG, "onDestroy()");
 		super.onDestroy();
 		dbAdapter.close();
 		locationManager.removeUpdates(this);
@@ -102,42 +102,42 @@ public class LocationListenerService extends Service implements LocationListener
 	}
 
 	private void addLocationToDB(Location location) {
-		Log.w(TAG, "Location changed: " + location.toString());
+		Log.i(TAG, "Location changed: " + location.toString());
 		dbAdapter.addLocation(location);
 		Intent intent = new Intent("com.shinetech.android.UPDATE_UI");
 		sendBroadcast(intent);
-		Log.w(TAG, "UPDATE_UI intent broadcasted");
+		Log.i(TAG, "UPDATE_UI intent broadcasted");
 	}
 
 	public void onProviderEnabled(String provider) {
-		Log.w(TAG, "Provider " + provider + " is now enabled.");
+		Log.i(TAG, "Provider " + provider + " is now enabled.");
 	}
 
 	public void onProviderDisabled(String provider) {
-		Log.w(TAG, "Provider " + provider + " is now disabled.");
+		Log.i(TAG, "Provider " + provider + " is now disabled.");
 	}
 
 	public void onStatusChanged(String provider, int i, Bundle b) {
-		Log.w(TAG, "Provider " + provider + " has changed status to " + i);
+		Log.i(TAG, "Provider " + provider + " has changed status to " + i);
 	}
 
 	private void requestLocationUpdates() {
 		int sampleDistance = ((LocationMapperApplication) getApplication()).getPreferences().getSampleDistance();
 		int sampleInterval = ((LocationMapperApplication) getApplication()).getPreferences().getSampleInterval() * 1000 * 60;
-		Log.w(TAG, "Setting up location updates with sample distance " + sampleDistance + " m and sample interval "
+		Log.i(TAG, "Setting up location updates with sample distance " + sampleDistance + " m and sample interval "
 				+ sampleInterval + " ms.");
 
 		this.locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		locationManager.removeUpdates(this);
 		List<String> enabledProviders = this.locationManager.getProviders(true);
 		for (String provider:enabledProviders){
-			Log.w(TAG, "Requesting location updates from provider " + provider);
+			Log.i(TAG, "Requesting location updates from provider " + provider);
 			this.locationManager.requestLocationUpdates(provider, sampleInterval, sampleDistance, this);
 		}
 	}
 
 	private void addProximityAlert() {
-		Log.w(TAG, "addProximityAlert()");
+		Log.i(TAG, "addProximityAlert()");
 		int vicinityRadius = ((LocationMapperApplication) getApplication()).getPreferences().getVicinityRadius();
 		double latitude = ((LocationMapperApplication) getApplication()).getPreferences().getLocation().getLatitude();
 		double longitude = ((LocationMapperApplication) getApplication()).getPreferences().getLocation().getLongitude();

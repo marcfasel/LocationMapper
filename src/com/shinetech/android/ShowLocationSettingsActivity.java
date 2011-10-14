@@ -19,9 +19,6 @@ import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.app.Activity;
-import android.app.ActivityManager;
-import android.app.ActivityManager.RunningServiceInfo;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -31,6 +28,7 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -68,7 +66,7 @@ public class ShowLocationSettingsActivity extends Activity {
 
 	@Override
 	protected void onPause() {
-		Log.w(TAG, "onPause");
+		Log.i(TAG, "onPause");
 		super.onPause();
 
 		EditText editText = (EditText) findViewById(R.id.vicinityradius);
@@ -91,13 +89,13 @@ public class ShowLocationSettingsActivity extends Activity {
 
 	@Override
 	protected void onResume() {
-		Log.w(TAG, "onResume");
+		Log.i(TAG, "onResume");
 		super.onResume();
 		dbAdapter.open();
 	}
 
 	public void onClearDataBase(View view) {
-		Log.w(TAG, "onClearDataBase");
+		Log.i(TAG, "onClearDataBase");
 		int rows = dbAdapter.clearDatabase();
 		Toast.makeText(this, "Deleted " + rows + " rows.", Toast.LENGTH_SHORT).show();
 	}
@@ -148,7 +146,7 @@ public class ShowLocationSettingsActivity extends Activity {
 			if (location != null) {
 				float accuracy = location.getAccuracy();
 				long time = location.getTime();
-				Log.w(TAG, "TIME= " + time + ", minTime= " + minTime + ", bestTime= " + bestTime + ", accuracy= "
+				Log.i(TAG, "TIME= " + time + ", minTime= " + minTime + ", bestTime= " + bestTime + ", accuracy= "
 						+ accuracy + ", bestAccuracy= " + bestAccuracy);
 				if ((time > minTime && accuracy < bestAccuracy)) {
 					bestResult = location;
@@ -164,7 +162,7 @@ public class ShowLocationSettingsActivity extends Activity {
 	}
 
 	private void restorePreferences() {
-		Log.w(TAG, "restorePreferences");
+		Log.i(TAG, "restorePreferences");
 		Preferences preferences = ((LocationMapperApplication) getApplicationContext()).getPreferences();
 
 		setStoredLocation(preferences.getLocation());
@@ -180,7 +178,7 @@ public class ShowLocationSettingsActivity extends Activity {
 	}
 
 	private void storePreferences(Location location, int vicinityRadius, int sampleInterval, int sampleDistance) {
-		Log.w(TAG, "storePreferences");
+		Log.i(TAG, "storePreferences");
 
 		Preferences preferences = ((LocationMapperApplication) getApplicationContext()).getPreferences();
 		preferences.setLocation(location);
@@ -191,137 +189,83 @@ public class ShowLocationSettingsActivity extends Activity {
 	}
 
 	public void onStoreLocation(View view) {
-		Log.w(TAG, "onStoreLocation");
+		Log.i(TAG, "onStoreLocation");
 		storedLocation = currentLocation;
 		storedLocation.setProvider("stored");
 
 		dbAdapter.addLocation(storedLocation);
 
 		setStoredLocation(storedLocation);
-		// TextView textView = (TextView) findViewById(R.id.storedlocationname);
-		// textView.setText(storedLocation.getProvider());
-		// textView = (TextView) findViewById(R.id.storedlocationlatitude);
-		// textView.setText(new
-		// DecimalFormat("###.####").format(storedLocation.getLatitude()));
-		// textView = (TextView) findViewById(R.id.storedlocationlongitude);
-		// textView.setText(new
-		// DecimalFormat("###.####").format(storedLocation.getLongitude()));
-		// textView = (TextView) findViewById(R.id.storedlocationtime);
-		// textView.setText(new SimpleDateFormat("HH:mm:ss").format(new
-		// Date(storedLocation.getTime())));
-		// textView = (TextView) findViewById(R.id.storedlocationaccuracy);
-		// textView.setText(new
-		// DecimalFormat("####").format(storedLocation.getAccuracy()));
-	}
-
-	public void onExportData(View view) {
-		Log.w(TAG, "onExportData()");
-		ExportDataTask exportDataTask = new ExportDataTask();
-		exportDataTask.execute();
 	}
 
 	public void onEmailData(View view) {
-		Log.w(TAG, "onEmailData()");
-		try {
-			writeDbDataToTempFile();
-			emailData();
-			//TODO: Delete temp file
-		} catch (Exception e){
-			String result = "Error emailing data: " + e.getMessage();
-			Log.w(TAG, result);
-			Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
-		}
+		Log.i(TAG, "onEmailData()");
+		EmailDataTask emailDataTask = new EmailDataTask();
+		emailDataTask.execute();
 	}
 
-	private void emailData() {
-		final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND_MULTIPLE);
-		emailIntent.setType("plain/text");
-        emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Hello");
- 
-        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Hello body!");
-
-        ArrayList<Uri> uris = new ArrayList<Uri>();
-
-		File f1 = null;
-		try {
-		    f1 = new File("/sdcard/test");
-		    FileWriter fw1 = new FileWriter(f1);
-		    fw1.write("this is some text");
-		    fw1.close();
-		} catch (IOException e) { 
-		    e.printStackTrace();
-		}
-
-		uris.add(Uri.fromFile(f1));
-
-//		File fileIn = new File(Environment.getDataDirectory()+"/data/com.shinetech.android/files/data.csv");
-//		
-//		Uri u = Uri.fromFile(fileIn);
-//        uris.add(u);
-		emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris); 
-		context.startActivity(Intent.createChooser(emailIntent, "Send mail...")); 
-	}
-
-	private void writeDbDataToTempFile() throws IOException {
-		Log.w(TAG, "writeDbDataToTempFile");
-		String data = "";
-		FileOutputStream fileOutputStream = openFileOutput("data.csv", MODE_PRIVATE);
-		OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream);
-
-		Cursor cursor = dbAdapter.fetchAllLocations();
-		cursor.moveToFirst();
-
-		Log.w(TAG, "Writing " + cursor.getCount() + " records.");
-		while (cursor.isAfterLast() == false) {
-			data = cursor.getDouble(2) + "," + cursor.getDouble(3) + "," + cursor.getInt(4) + ","
-					+ cursor.getString(1) + ","
-					+ new SimpleDateFormat("HH:mm:ss").format(new Date(cursor.getLong(5))) + "\n";
-			Log.w(TAG, data);
-			outputStreamWriter.write(data);
-			cursor.moveToNext();
-		}
-		outputStreamWriter.flush();
-		outputStreamWriter.close();
-		cursor.close();
-		Log.w(TAG, "Done.");
-	}
-
-	private class ExportDataTask extends AsyncTask<String, Void, String> {
+	
+	private class EmailDataTask extends AsyncTask<String, Void, String> {
 		@Override
 		protected String doInBackground(String... urls) {
 			try {
 				writeDbDataToTempFile();
-				exportDataToWeb();
+				emailData();
 			} catch (Exception e) {
-				Log.w(TAG, "Error exporting data: " + e.getMessage());
+				Log.i(TAG, "Error emailing data: " + e.getMessage());
 
-				return "Error exporting data: " + e.getMessage();
+				return "Error emailing data: " + e.getMessage();
 			}
-			return "Data successfully exported.";
+			return "Data successfully emailed.";
 		}
 
 		@Override
 		protected void onPostExecute(String result) {
-			Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
-			//TODO: Delete temp file
+			Log.i(TAG, "result");
 		}
 
-		private void exportDataToWeb() throws ClientProtocolException, IOException {
-			Log.w(TAG, "exportDataToWeb()");
-			HttpClient httpClient = new DefaultHttpClient();
+		private void emailData() {
+			final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND_MULTIPLE);
+			emailIntent.setType("plain/text");
+	        emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Location Mapper Data");
+	        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Location Mapper Data");
+	 
+	        ArrayList<Uri> uris = new ArrayList<Uri>();
 
-			HttpPost httpPost = new HttpPost("http://192.168.1.23:8081/data");
-			FileInputStream fileInputStream = openFileInput("data.csv");
-			InputStreamEntity inputStreamEntity = new InputStreamEntity(fileInputStream, -1);
-			inputStreamEntity.setContentType("binary/octect-stream");
-			inputStreamEntity.setChunked(true);
-			httpPost.setEntity(inputStreamEntity);
+			File fileIn = new File(Environment.getExternalStorageDirectory(),"data.csv");
+			
+			Uri u = Uri.fromFile(fileIn);
+	        uris.add(u);
+			emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris); 
+			context.startActivity(Intent.createChooser(emailIntent, "Send mail...")); 
+		}
 
-			// Execute HTTP Post Request
-			httpClient.execute(httpPost);
-			Log.w(TAG, "Done.");
+		private void writeDbDataToTempFile() throws IOException {
+			Log.i(TAG, "writeDbDataToTempFile");
+			String data = "";
+			File dataFile = new File(Environment.getExternalStorageDirectory(),"data.csv");
+			FileOutputStream fileOutputStream = new FileOutputStream(dataFile);
+			OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream);
+
+			Cursor cursor = dbAdapter.fetchAllLocations();
+			cursor.moveToFirst();
+
+			Log.i(TAG, "Writing " + cursor.getCount() + " records.");
+			while (cursor.isAfterLast() == false) {
+				data = cursor.getDouble(2) + "," + cursor.getDouble(3) + "," + cursor.getInt(4) + ","
+						+ cursor.getString(1) + ","
+						+ new SimpleDateFormat("HH:mm:ss").format(new Date(cursor.getLong(5))) + "\n";
+				Log.i(TAG, data);
+				outputStreamWriter.write(data);
+				cursor.moveToNext();
+			}
+			outputStreamWriter.flush();
+			outputStreamWriter.close();
+			cursor.close();
+			Log.i(TAG, "Done.");
 		}
 
 	}
+
 
 }

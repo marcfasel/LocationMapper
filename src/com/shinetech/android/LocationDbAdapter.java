@@ -46,7 +46,7 @@ public class LocationDbAdapter {
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
+            Log.i(TAG, "Upgrading database from version " + oldVersion + " to "
                     + newVersion + ", which will destroy all old data");
             db.execSQL("DROP TABLE IF EXISTS locations");
             onCreate(db);
@@ -92,7 +92,7 @@ public class LocationDbAdapter {
      * @return rowId or -1 if failed
      */
     public long addLocation(Location location) {
-    	Log.w(TAG, "Writing new location:"+location.toString());
+    	Log.i(TAG, "Writing new location:"+location.toString());
     	ContentValues contentValues = new ContentValues();
         contentValues.put(KEY_NAME, location.getProvider());
         contentValues.put(KEY_LATITUDE, location.getLatitude());
@@ -104,7 +104,7 @@ public class LocationDbAdapter {
     }
 
     public int clearDatabase() {
-    	Log.w(TAG, "clearDatabase()");
+    	Log.i(TAG, "clearDatabase()");
     	return mDb.delete(DATABASE_TABLE, null, null);
     }
     

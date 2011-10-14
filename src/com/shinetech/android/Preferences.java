@@ -56,7 +56,7 @@ public class Preferences {
 	}
 
 	public void load() {
-		Log.w(TAG, "load()");
+		Log.i(TAG, "load()");
 		// Only fetch preferences if they exist
 		this.location = new Location(sharedPreferences.getString("name", ""));
 		// TODO: These are actually doubles not floats
@@ -71,7 +71,7 @@ public class Preferences {
 	}
 
 	public void store() {
-		Log.w(TAG, "store()");
+		Log.i(TAG, "store()");
 		SharedPreferences.Editor editor = sharedPreferences.edit();
 		editor.putString("name", location.getProvider());
 		editor.putFloat("latitude", (float) location.getLatitude());

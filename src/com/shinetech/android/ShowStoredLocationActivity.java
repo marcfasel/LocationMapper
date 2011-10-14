@@ -30,7 +30,7 @@ public class ShowStoredLocationActivity extends ListActivity {
 	private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			Log.w(TAG, "Received UPDATE_UI message");
+			Log.i(TAG, "Received UPDATE_UI message");
 			getCursorAdapter().getCursor().requery();
 			getCursorAdapter().notifyDataSetChanged();
 		}
@@ -51,7 +51,7 @@ public class ShowStoredLocationActivity extends ListActivity {
 
 	@Override
 	public void onResume() {
-		Log.w(TAG, "onResume()");
+		Log.i(TAG, "onResume()");
 		super.onResume();
 		dbAdapter.open();
 		String[] from = { LocationDbAdapter.KEY_NAME, LocationDbAdapter.KEY_LATITUDE, LocationDbAdapter.KEY_LONGITUDE,
@@ -70,7 +70,7 @@ public class ShowStoredLocationActivity extends ListActivity {
 
 	@Override
 	public void onPause() {
-		Log.w(TAG, "onPause()");
+		Log.i(TAG, "onPause()");
 		super.onPause();
 		dbAdapter.close();
 		this.unregisterReceiver(this.broadcastReceiver);
