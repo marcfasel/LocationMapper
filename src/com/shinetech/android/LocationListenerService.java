@@ -16,7 +16,8 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
-public class LocationListenerService extends Service implements LocationListener {
+public class LocationListenerService extends Service implements
+		LocationListener {
 
 	public static final int UPDATE_MESSAGE = 1;
 	public static final String PROXIMTY_ALERT_INTENT = "com.shinetech.android.PROXIMTY_ALERT";
@@ -39,17 +40,20 @@ public class LocationListenerService extends Service implements LocationListener
 		}
 
 		private void handleProximityAlert(Intent intent) {
-			Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+			Location location = locationManager
+					.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 			if (location == null) {
-				location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+				location = locationManager
+						.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 				if (location == null) {
 					// We'll just write an empty location
 					location = new Location("prx");
 				}
 			}
-			
-			if (intent.hasExtra(LocationManager.KEY_PROXIMITY_ENTERING)){
-				if (intent.getBooleanExtra(LocationManager.KEY_PROXIMITY_ENTERING, true)==true) {
+
+			if (intent.hasExtra(LocationManager.KEY_PROXIMITY_ENTERING)) {
+				if (intent.getBooleanExtra(
+						LocationManager.KEY_PROXIMITY_ENTERING, true) == true) {
 					location.setProvider("prx_enter");
 				} else {
 					location.setProvider("prx_exit");
@@ -122,35 +126,44 @@ public class LocationListenerService extends Service implements LocationListener
 	}
 
 	private void requestLocationUpdates() {
-		int sampleDistance = ((LocationMapperApplication) getApplication()).getPreferences().getSampleDistance();
-		int sampleInterval = ((LocationMapperApplication) getApplication()).getPreferences().getSampleInterval() * 1000 * 60;
-		Log.i(TAG, "Setting up location updates with sample distance " + sampleDistance + " m and sample interval "
-				+ sampleInterval + " ms.");
+		int sampleDistance = ((LocationMapperApplication) getApplication())
+				.getPreferences().getSampleDistance();
+		int sampleInterval = ((LocationMapperApplication) getApplication())
+				.getPreferences().getSampleInterval() * 1000 * 60;
+		Log.i(TAG, "Setting up location updates with sample distance "
+				+ sampleDistance + " m and sample interval " + sampleInterval
+				+ " ms.");
 
 		this.locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		locationManager.removeUpdates(this);
 		List<String> enabledProviders = this.locationManager.getProviders(true);
-		for (String provider:enabledProviders){
+		for (String provider : enabledProviders) {
 			Log.i(TAG, "Requesting location updates from provider " + provider);
-			this.locationManager.requestLocationUpdates(provider, sampleInterval, sampleDistance, this);
+			this.locationManager.requestLocationUpdates(provider,
+					sampleInterval, sampleDistance, this);
 		}
 	}
 
 	private void addProximityAlert() {
 		Log.i(TAG, "addProximityAlert()");
-		int vicinityRadius = ((LocationMapperApplication) getApplication()).getPreferences().getVicinityRadius();
-		double latitude = ((LocationMapperApplication) getApplication()).getPreferences().getLocation().getLatitude();
-		double longitude = ((LocationMapperApplication) getApplication()).getPreferences().getLocation().getLongitude();
+		int vicinityRadius = ((LocationMapperApplication) getApplication())
+				.getPreferences().getVicinityRadius();
+		double latitude = ((LocationMapperApplication) getApplication())
+				.getPreferences().getLocation().getLatitude();
+		double longitude = ((LocationMapperApplication) getApplication())
+				.getPreferences().getLocation().getLongitude();
 
 		long expiration = -1;
 
-Intent intent = new Intent(PROXIMTY_ALERT_INTENT);
-PendingIntent proximityIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+		Intent intent = new Intent(PROXIMTY_ALERT_INTENT);
+		PendingIntent proximityIntent = PendingIntent.getBroadcast(this, 0,
+				intent, 0);
 
-locationManager.addProximityAlert(latitude, longitude, vicinityRadius, expiration,	proximityIntent);
+		locationManager.addProximityAlert(latitude, longitude, vicinityRadius,
+				expiration, proximityIntent);
 
-IntentFilter filter = new IntentFilter(PROXIMTY_ALERT_INTENT);
-registerReceiver(this.broadcastReceiver, filter);
+		IntentFilter filter = new IntentFilter(PROXIMTY_ALERT_INTENT);
+		registerReceiver(this.broadcastReceiver, filter);
 	}
 
 }

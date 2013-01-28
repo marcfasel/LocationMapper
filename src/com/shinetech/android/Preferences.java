@@ -65,7 +65,7 @@ public class Preferences {
 		this.location.setAccuracy(sharedPreferences.getFloat("accuracy", 0f));
 		this.location.setTime(sharedPreferences.getLong("time", 0l));
 
-		this.vicinityRadius = sharedPreferences.getInt("vicinityradius", 0);
+		this.vicinityRadius = sharedPreferences.getInt("vicinityradius", 100);
 		this.sampleInterval = sharedPreferences.getInt("sampleinterval", 0);
 		this.sampleDistance = sharedPreferences.getInt("sampledistance", 0);
 	}
