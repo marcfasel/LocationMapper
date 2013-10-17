@@ -11,13 +11,19 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.SimpleCursorAdapter;
 
-public class ShowStoredLocationActivity extends ListActivity {
+public class ShowStoredLocationActivity extends ListActivity implements
+		OnClickListener {
 	private static final String TAG = "LocationTrackerActivity";
 
 	private LocationDbAdapter dbAdapter;
 	private SimpleCursorAdapter cursorAdapter;
+	private Button stopButton;
+	private Button startButton;
 
 	public SimpleCursorAdapter getCursorAdapter() {
 		return cursorAdapter;
@@ -44,9 +50,12 @@ public class ShowStoredLocationActivity extends ListActivity {
 
 		dbAdapter = new LocationDbAdapter(this);
 
-		ComponentName locationListenerServiceName = new ComponentName(getPackageName(),
-				LocationListenerService.class.getName());
-		startService(new Intent().setComponent(locationListenerServiceName));
+		stopButton = (Button) findViewById(R.id.stop_button);
+		startButton = (Button) findViewById(R.id.start_button);
+
+		stopButton.setOnClickListener(this);
+		startButton.setOnClickListener(this);
+
 	}
 
 	@Override
@@ -54,11 +63,15 @@ public class ShowStoredLocationActivity extends ListActivity {
 		Log.i(TAG, "onResume()");
 		super.onResume();
 		dbAdapter.open();
-		String[] from = { LocationDbAdapter.KEY_NAME, LocationDbAdapter.KEY_LATITUDE, LocationDbAdapter.KEY_LONGITUDE,
+		String[] from = { LocationDbAdapter.KEY_NAME,
+				LocationDbAdapter.KEY_LATITUDE,
+				LocationDbAdapter.KEY_LONGITUDE,
 				LocationDbAdapter.KEY_ACCURACY, LocationDbAdapter.KEY_TIME };
-		int[] to = { R.id.locationname, R.id.locationlatitude, R.id.locationlongitude, R.id.locationaccuracy,
+		int[] to = { R.id.locationname, R.id.locationlatitude,
+				R.id.locationlongitude, R.id.locationaccuracy,
 				R.id.locationtime };
-		cursorAdapter = new LocationCursorAdapter(this, R.layout.stored_locations_row_layout,
+		cursorAdapter = new LocationCursorAdapter(this,
+				R.layout.stored_locations_row_layout,
 				dbAdapter.fetchAllLocations(), from, to);
 		this.setListAdapter(cursorAdapter);
 		IntentFilter intentFilter = new IntentFilter();
@@ -93,4 +106,16 @@ public class ShowStoredLocationActivity extends ListActivity {
 		}
 	}
 
+	@Override
+	public void onClick(View v) {
+		ComponentName locationListenerServiceName = new ComponentName(
+				getPackageName(), LocationListenerService.class.getName());
+		Intent i = new Intent().setComponent(locationListenerServiceName);
+
+		if (v.getId() == R.id.start_button) {
+			startService(i);
+		} else if (v.getId() == R.id.stop_button) {
+			stopService(i);
+		}
+	}
 }
